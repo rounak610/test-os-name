@@ -36,13 +36,13 @@ jobs:
         run: |
           node -e "const os = require('os'); console.log('Node.js - os.platform():', os.platform());"
 
-      #   - name: Print OS description using C#
-      #     run: |
-      #       dotnet new console -n OSTest -o /tmp/ostest --force
-      #       echo -e 'using System;\nusing System.Runtime.InteropServices;\n\nConsole.WriteLine($"C# - RuntimeInformation.OSDescription.Trim(): {RuntimeInformation.OSDescription.Trim()}");' > /tmp/ostest/Program.cs
-      #       dotnet run --project /tmp/ostest
+      - name: Print OS description using C# -- original method
+        run: |
+         dotnet new console -n OSTest -o /tmp/ostest --force
+         echo -e 'using System;\nusing System.Runtime.InteropServices;\n\nConsole.WriteLine($"C# - RuntimeInformation.OSDescription.Trim(): {RuntimeInformation.OSDescription.Trim()}");' > /tmp/ostest/Program.cs
+         dotnet run --project /tmp/ostest
 
-      - name: Print OS description using C#
+      - name: Print OS description using C# -- new method
         run: |
           dotnet new console -n OSTest -o /tmp/ostest --force
           echo -e 'using System;\nusing System.Runtime.InteropServices;\n\nif (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) Console.WriteLine("C# - OS Platform: Linux");\nelse if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) Console.WriteLine("C# - OS Platform: Windows");\nelse if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) Console.WriteLine("C# - OS Platform: macOS");\nelse Console.WriteLine("C# - OS Platform: Unknown");' > /tmp/ostest/Program.cs
