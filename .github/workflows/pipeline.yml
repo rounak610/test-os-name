@@ -22,6 +22,11 @@ jobs:
         with:
           node-version: '20.x'
 
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
       - name: Print OS name using Python
         run: |
           python -c "import platform; print(f'Python - platform.system(): {platform.system()}')"
@@ -29,6 +34,28 @@ jobs:
       - name: Print OS platform using Node.js
         run: |
           node -e "const os = require('os'); console.log('Node.js - os.platform():', os.platform());"
+
+      - name: Print OS description using C#
+        run: |
+          dotnet --version
+          dotnet exec --runtimeconfig <(echo '{"runtimeOptions":{"tfm":"net8.0","framework":{"name":"Microsoft.NETCore.App","version":"8.0.0"}}}') \
+            <(cat << 'EOF'
+          using System;
+          using System.Runtime.InteropServices;
+          Console.WriteLine($"C# - RuntimeInformation.OSDescription.Trim(): {RuntimeInformation.OSDescription.Trim()}");
+          EOF
+          )
+        shell: bash
+
+    #   - name: Print OS description using C# (Alternative)
+    #     run: |
+    #       cat > Program.cs << 'EOF'
+    #       using System;
+    #       using System.Runtime.InteropServices;
+          
+    #       Console.WriteLine($"C# - RuntimeInformation.OSDescription.Trim(): {RuntimeInformation.OSDescription.Trim()}");
+    #       EOF
+    #       dotnet script eval "$(cat Program.cs)" || csc Program.cs && mono Program.exe || dotnet run
 
       - name: Print all OS information
         run: |
