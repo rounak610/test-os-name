@@ -57,10 +57,10 @@ jobs:
     #       EOF
     #       dotnet script eval "$(cat Program.cs)" || csc Program.cs && mono Program.exe || dotnet run
 
-      - name: Print all OS information
-        run: |
-          echo "=== Python Platform Info ==="
-          python -c "import platform; print(f'System: {platform.system()}'); print(f'Release: {platform.release()}'); print(f'Platform: {platform.platform()}')"
-          echo ""
-          echo "=== Node.js OS Info ==="
-          node -e "const os = require('os'); console.log('Platform:', os.platform()); console.log('Type:', os.type()); console.log('Release:', os.release());"
+    #   - name: Print all OS information
+    #     run: |
+    #       echo "=== Python Platform Info ==="
+    #       python -c "import platform; print(f'System: {platform.system()}'); print(f'Release: {platform.release()}'); print(f'Platform: {platform.platform()}')"
+    #       echo ""
+    #       echo "=== Node.js OS Info ==="
+    #       node -e "const os = require('os'); console.log('Platform:', os.platform()); console.log('Type:', os.type()); console.log('Release:', os.release());"
