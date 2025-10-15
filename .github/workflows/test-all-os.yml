@@ -1,0 +1,70 @@
+name: Test OS Detection on All Platforms (Including Alpine)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-ubuntu:
+    name: "Test on Ubuntu (Linux)"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.x"
+
+      - name: Test C# OS Detection
+        run: |
+          dotnet new console -n OSTest -o /tmp/ostest --force
+          echo -e 'using System;\nusing System.Runtime.InteropServices;\n\nif (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) Console.WriteLine("C# - OS Platform: Linux");\nelse if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) Console.WriteLine("C# - OS Platform: Windows");\nelse if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) Console.WriteLine("C# - OS Platform: macOS");\nelse Console.WriteLine("C# - OS Platform: Unknown");' > /tmp/ostest/Program.cs
+          dotnet run --project /tmp/ostest
+
+  test-macos:
+    name: "Test on macOS (Darwin)"
+    runs-on: macos-latest
+    steps:
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.x"
+
+      - name: Test C# OS Detection
+        run: |
+          dotnet new console -n OSTest -o /tmp/ostest --force
+          echo -e 'using System;\nusing System.Runtime.InteropServices;\n\nif (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) Console.WriteLine("C# - OS Platform: Linux");\nelse if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) Console.WriteLine("C# - OS Platform: Windows");\nelse if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) Console.WriteLine("C# - OS Platform: macOS");\nelse Console.WriteLine("C# - OS Platform: Unknown");' > /tmp/ostest/Program.cs
+          dotnet run --project /tmp/ostest
+
+  test-windows:
+    name: "Test on Windows"
+    runs-on: windows-latest
+    steps:
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.x"
+
+      - name: Test C# OS Detection
+        run: |
+          dotnet new console -n OSTest -o $env:TEMP\ostest --force
+          @"
+          using System;
+          using System.Runtime.InteropServices;
+
+          if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) Console.WriteLine("C# - OS Platform: Linux");
+          else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) Console.WriteLine("C# - OS Platform: Windows");
+          else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) Console.WriteLine("C# - OS Platform: macOS");
+          else Console.WriteLine("C# - OS Platform: Unknown");
+          "@ | Out-File -FilePath "$env:TEMP\ostest\Program.cs" -Encoding UTF8
+          dotnet run --project "$env:TEMP\ostest"
+
+  test-alpine:
+    name: "Test on Alpine Linux (Docker)"
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/dotnet/sdk:8.0-alpine
+    steps:
+      - name: Test C# OS Detection on Alpine
+        run: |
+          dotnet new console -n OSTest -o /tmp/ostest --force
+          echo -e 'using System;\nusing System.Runtime.InteropServices;\n\nif (RuntimeInformation.IsOSPlatform(OSPlatform.Linux)) Console.WriteLine("C# - OS Platform: Linux");\nelse if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) Console.WriteLine("C# - OS Platform: Windows");\nelse if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX)) Console.WriteLine("C# - OS Platform: macOS");\nelse Console.WriteLine("C# - OS Platform: Unknown");\nConsole.WriteLine($"Full OS Description: {RuntimeInformation.OSDescription.Trim()}");' > /tmp/ostest/Program.cs
+          dotnet run --project /tmp/ostest
