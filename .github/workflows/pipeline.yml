@@ -39,10 +39,5 @@ jobs:
       - name: Print OS description using C#
         run: |
           dotnet new console -n OSTest -o /tmp/ostest --force
-          cat > /tmp/ostest/Program.cs << 'EOF'
-            using System;
-            using System.Runtime.InteropServices;
-
-            Console.WriteLine($"C# - RuntimeInformation.OSDescription.Trim(): {RuntimeInformation.OSDescription.Trim()}");
-            EOF
+          echo -e 'using System;\nusing System.Runtime.InteropServices;\n\nConsole.WriteLine($"C# - RuntimeInformation.OSDescription.Trim(): {RuntimeInformation.OSDescription.Trim()}");' > /tmp/ostest/Program.cs
           dotnet run --project /tmp/ostest
