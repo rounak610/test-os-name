@@ -1,0 +1,39 @@
+name: Test Name of OS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ubuntu-job:
+    name: 'Test on Ubuntu'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Print OS name using Python
+        run: |
+          python -c "import platform; print(f'Python - platform.system(): {platform.system()}')"
+
+      - name: Print OS platform using Node.js
+        run: |
+          node -e "const os = require('os'); console.log('Node.js - os.platform():', os.platform());"
+
+      - name: Print all OS information
+        run: |
+          echo "=== Python Platform Info ==="
+          python -c "import platform; print(f'System: {platform.system()}'); print(f'Release: {platform.release()}'); print(f'Platform: {platform.platform()}')"
+          echo ""
+          echo "=== Node.js OS Info ==="
+          node -e "const os = require('os'); console.log('Platform:', os.platform()); console.log('Type:', os.type()); console.log('Release:', os.release());"
