@@ -7,6 +7,7 @@ jobs:
   ubuntu-job:
     name: 'Test on Ubuntu'
     runs-on: ubuntu-latest
+    environment: test
 
     steps:
       - name: Checkout code
@@ -37,30 +38,11 @@ jobs:
 
       - name: Print OS description using C#
         run: |
-          dotnet --version
-          dotnet exec --runtimeconfig <(echo '{"runtimeOptions":{"tfm":"net8.0","framework":{"name":"Microsoft.NETCore.App","version":"8.0.0"}}}') \
-            <(cat << 'EOF'
-          using System;
-          using System.Runtime.InteropServices;
-          Console.WriteLine($"C# - RuntimeInformation.OSDescription.Trim(): {RuntimeInformation.OSDescription.Trim()}");
-          EOF
-          )
-        shell: bash
+          dotnet new console -n OSTest -o /tmp/ostest --force
+          cat > /tmp/ostest/Program.cs << 'EOF'
+            using System;
+            using System.Runtime.InteropServices;
 
-    #   - name: Print OS description using C# (Alternative)
-    #     run: |
-    #       cat > Program.cs << 'EOF'
-    #       using System;
-    #       using System.Runtime.InteropServices;
-          
-    #       Console.WriteLine($"C# - RuntimeInformation.OSDescription.Trim(): {RuntimeInformation.OSDescription.Trim()}");
-    #       EOF
-    #       dotnet script eval "$(cat Program.cs)" || csc Program.cs && mono Program.exe || dotnet run
-
-    #   - name: Print all OS information
-    #     run: |
-    #       echo "=== Python Platform Info ==="
-    #       python -c "import platform; print(f'System: {platform.system()}'); print(f'Release: {platform.release()}'); print(f'Platform: {platform.platform()}')"
-    #       echo ""
-    #       echo "=== Node.js OS Info ==="
-    #       node -e "const os = require('os'); console.log('Platform:', os.platform()); console.log('Type:', os.type()); console.log('Release:', os.release());"
+            Console.WriteLine($"C# - RuntimeInformation.OSDescription.Trim(): {RuntimeInformation.OSDescription.Trim()}");
+            EOF
+          dotnet run --project /tmp/ostest
