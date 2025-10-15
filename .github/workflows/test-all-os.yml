@@ -71,14 +71,14 @@ jobs:
           dotnet run --project /tmp/ostest
 
   test-centos:
-    name: "Test on CentOS (Docker)"
+    name: "Test on Red Hat UBI (RHEL-based)"
     runs-on: ubuntu-latest
     container:
-      image: centos:centos7
+      image: registry.access.redhat.com/ubi8/ubi
     steps:
-      - name: Install .NET SDK on CentOS
+      - name: Install .NET SDK
         run: |
-          yum install -y wget tar gzip libicu
+          dnf install -y wget tar gzip
           wget https://dot.net/v1/dotnet-install.sh -O dotnet-install.sh
           chmod +x dotnet-install.sh
           ./dotnet-install.sh --channel 8.0 --install-dir /usr/share/dotnet
@@ -87,7 +87,7 @@ jobs:
           export PATH=$PATH:$DOTNET_ROOT
           dotnet --version
 
-      - name: Test C# OS Detection on CentOS
+      - name: Test C# OS Detection
         run: |
           export DOTNET_ROOT=/usr/share/dotnet
           export PATH=$PATH:$DOTNET_ROOT
